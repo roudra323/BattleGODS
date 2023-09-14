@@ -1,7 +1,7 @@
 import React from "react";
 import { PageHOC } from "../components";
 
-const Home = () => {
+const CreateBattle = () => {
   return (
     <div>
       <h1 className="text-white">Hello from Create Battle</h1>
@@ -10,12 +10,9 @@ const Home = () => {
 };
 
 export default PageHOC(
-  Home,
+  CreateBattle,
   <>
-    Welcome to Avax Gods <br /> a Web3 NFT Card Game
+    Create <br /> a new Battle
   </>,
-  <>
-    Connect your wallet to start playing <br /> the ultimate Web3 Battle Card
-    Game
-  </>
+  <>Create your own battle and wait for other players to join you</>
 );

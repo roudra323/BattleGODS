@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -11,7 +11,7 @@
 }
 
 .head-text::before {
-  content: "";
+  content: '';
   display: flex;
   width: 4px;
   height: 100%;
@@ -34,7 +34,7 @@
 }
 
 .battle-card:before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
