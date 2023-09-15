@@ -15,29 +15,46 @@ import ABI from "../contract";
 const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
-  const { address, isConnected, isDisconnected } = useAccount();
-
   const [state, setState] = useState({
     provider: null,
     signer: null,
     contract: null,
   });
+  //   const [contract, setContract] = useState(null);
+  const [account, setAccount] = useState("None");
+  const [isConnected, setIsConnected] = useState(false);
 
   const contractInstance = async () => {
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
     const contractABI = ABI;
+
     try {
       const { ethereum } = window;
 
       if (ethereum) {
-        const provider = new Web3Provider(ethereum);
+        await ethereum.request({ method: "eth_requestAccounts" });
+
+        window.ethereum.on("chainChanged", () => {
+          window.location.reload();
+        });
+
+        window.ethereum.on("accountsChanged", () => {
+          window.location.reload();
+        });
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const contract = new ethers.Contract(
           contractAddress,
           contractABI,
           signer
         );
+        const accounts = await provider.listAccounts();
+        setAccount(accounts[0]);
+
         setState({ provider, signer, contract });
+        // setContract(contract);
+        if (contract) setIsConnected(true);
       } else {
         alert("Please install metamask");
       }
@@ -48,12 +65,15 @@ export const GlobalProvider = ({ children }) => {
 
   useEffect(() => {
     contractInstance();
-  }, [address, isConnected, isDisconnected]);
+    window?.ethereum?.on("accountsChanged", contractInstance);
+  }, []);
 
   return (
     <GlobalContext.Provider
       value={{
-        state: state,
+        contract: state.contract,
+        account,
+        isConnected,
       }}
     >
       {children}

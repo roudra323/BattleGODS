@@ -3,10 +3,12 @@ import { useGlobalContext } from "../context";
 import { PageHOC } from "../components";
 
 const Home = () => {
-  const { state } = useGlobalContext();
+  const { contract, account, isConnected } = useGlobalContext();
   return (
     <div>
-      <h1 className="text-white">{console.log(state)}</h1>
+      <h1 className="text-white">
+        {/* {console.log(contract, "\n", account, "\n", isConnected)} */}
+      </h1>
     </div>
   );
 };
