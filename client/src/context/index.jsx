@@ -29,7 +29,12 @@ export const GlobalProvider = ({ children }) => {
     type: "info",
     message: "",
   });
-
+  const [battleName, setBattleName] = useState("");
+  const [gameData, setGameData] = useState({
+    players: [],
+    pendingBattles: [],
+    activeBattles: null,
+  });
   const contractInstance = async () => {
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
     const contractABI = ABI;
@@ -69,6 +74,29 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
+  const fetchGameData = async () => {
+    const fetchBattles = await state.contract.getAllBattles();
+    console.log(fetchBattles);
+
+    const pendingBattles = fetchBattles.filter(
+      (battle) => battle.battleStatus === 0
+    );
+    let activeBattles = null;
+
+    fetchBattles.forEach((battle) => {
+      if (
+        battle.players.find(
+          (player) => player.toLowerCase() === account.toLowerCase()
+        )
+      ) {
+        if (battle.winner.startsWith("0x00")) {
+          activeBattles = battle;
+        }
+      }
+    });
+    setGameData({ pendingBattles: pendingBattles.slice(1), activeBattles });
+  };
+
   useEffect(() => {
     contractInstance();
     window?.ethereum?.on("accountsChanged", contractInstance);
@@ -101,6 +129,12 @@ export const GlobalProvider = ({ children }) => {
     }
   }, [state.contract]);
 
+  useEffect(() => {
+    if (state.contract) {
+      fetchGameData();
+    }
+  }, [state.contract]);
+
   return (
     <GlobalContext.Provider
       value={{
@@ -109,6 +143,9 @@ export const GlobalProvider = ({ children }) => {
         isConnected,
         showAlert,
         setShowAlert,
+        battleName,
+        setBattleName,
+        gameData,
       }}
     >
       {children}
