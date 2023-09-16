@@ -22,7 +22,7 @@ export const createEventListeners = ({
   AddNewEvent(NewPlayerEventFilter, provider, ({ args }) => {
     console.log("New Player Created!!", args);
 
-    if (address === args.owner) {
+    if (account === args.owner) {
       setShowAlert({
         status: true,
         type: "success",
