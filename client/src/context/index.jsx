@@ -20,9 +20,13 @@ export const GlobalProvider = ({ children }) => {
     signer: null,
     contract: null,
   });
-  //   const [contract, setContract] = useState(null);
   const [account, setAccount] = useState("None");
   const [isConnected, setIsConnected] = useState(false);
+  const [showAlert, setShowAlert] = useState({
+    status: "false",
+    type: "info",
+    message: "",
+  });
 
   const contractInstance = async () => {
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
@@ -68,12 +72,27 @@ export const GlobalProvider = ({ children }) => {
     window?.ethereum?.on("accountsChanged", contractInstance);
   }, []);
 
+  useEffect(() => {
+    if (showAlert?.status) {
+      const timer = setTimeout(() => {
+        setShowAlert({
+          status: false,
+          type: "info",
+          message: "",
+        });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
+
   return (
     <GlobalContext.Provider
       value={{
         contract: state.contract,
         account,
         isConnected,
+        showAlert,
+        setShowAlert,
       }}
     >
       {children}
