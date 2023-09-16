@@ -23,7 +23,7 @@ export const GlobalProvider = ({ children }) => {
   const [account, setAccount] = useState("None");
   const [isConnected, setIsConnected] = useState(false);
   const [showAlert, setShowAlert] = useState({
-    status: "false",
+    status: false,
     type: "info",
     message: "",
   });
@@ -80,7 +80,7 @@ export const GlobalProvider = ({ children }) => {
           type: "info",
           message: "",
         });
-      }, 3000);
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, [showAlert]);
