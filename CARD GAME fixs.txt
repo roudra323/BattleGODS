@@ -1,0 +1,3 @@
+CARD GAME:
+
+1. have to add tx loading in the Registered 

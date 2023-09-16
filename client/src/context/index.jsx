@@ -11,10 +11,12 @@ import { Web3Provider } from "@ethersproject/providers";
 import Web3Modal from "web3modal";
 import { useNavigate } from "react-router-dom";
 import ABI from "../contract";
+import { createEventListeners } from "./createEventListeners";
 
 const GlobalContext = createContext();
 
 export const GlobalProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [state, setState] = useState({
     provider: null,
     signer: null,
@@ -84,6 +86,20 @@ export const GlobalProvider = ({ children }) => {
       return () => clearTimeout(timer);
     }
   }, [showAlert]);
+
+  useEffect(() => {
+    if (state.contract) {
+      const contract = state.contract;
+      const provider = state.provider;
+      createEventListeners({
+        navigate,
+        contract,
+        provider,
+        account,
+        setShowAlert,
+      });
+    }
+  }, [state.contract]);
 
   return (
     <GlobalContext.Provider

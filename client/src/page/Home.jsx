@@ -17,15 +17,24 @@ const Home = () => {
         alert("Please connect your wallet");
         return;
       }
-      const isPlayer = await contract.isPlayer(account);
-      console.log(isPlayer);
+      const isPlayerExist = await contract.isPlayer(account);
+      console.log(isPlayerExist);
 
-      if (!isPlayer) {
+      const allPlayers = await contract.getAllPlayers();
+      console.log(allPlayers);
+
+      if (!isPlayerExist) {
         await contract.registerPlayer(playerName, playerName);
         setShowAlert({
           status: true,
           type: "info",
           message: `${playerName} is being summoned!!`,
+        });
+      } else {
+        setShowAlert({
+          status: true,
+          type: "info",
+          message: `${playerName} is already registered!!`,
         });
       }
     } catch (err) {
