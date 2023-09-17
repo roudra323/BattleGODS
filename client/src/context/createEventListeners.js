@@ -16,11 +16,12 @@ export const createEventListeners = ({
   provider,
   account,
   setShowAlert,
+  setUpdateGameData,
 }) => {
   const NewPlayerEventFilter = contract.filters.NewPlayer();
 
   AddNewEvent(NewPlayerEventFilter, provider, ({ args }) => {
-    console.log("New Player Created!!", args);
+    // console.log("New Player Created!!", args);
 
     if (account === args.owner) {
       setShowAlert({
@@ -29,5 +30,19 @@ export const createEventListeners = ({
         message: "New Player Created!!",
       });
     }
+  });
+
+  const NewBattleEventFilter = contract.filters.NewBattle();
+
+  AddNewEvent(NewBattleEventFilter, provider, ({ args }) => {
+    console.log("New Battle Created!!", args, account);
+
+    if (
+      account.toLowerCase() === args.player1.toLowerCase() ||
+      account.toLowerCase() === args.player2.toLowerCase()
+    ) {
+      navigate(`/battle/${args.battleName}`);
+    }
+    setUpdateGameData((prevGameData) => prevGameData + 1);
   });
 };

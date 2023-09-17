@@ -35,6 +35,7 @@ export const GlobalProvider = ({ children }) => {
     pendingBattles: [],
     activeBattles: null,
   });
+  const [updateGameData, setUpdateGameData] = useState(0);
   const contractInstance = async () => {
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
     const contractABI = ABI;
@@ -125,9 +126,10 @@ export const GlobalProvider = ({ children }) => {
         provider,
         account,
         setShowAlert,
+        setUpdateGameData,
       });
     }
-  }, [state.contract]);
+  }, [state.contract, setUpdateGameData]);
 
   useEffect(() => {
     if (state.contract) {
