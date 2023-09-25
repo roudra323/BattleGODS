@@ -33,7 +33,7 @@ export const GlobalProvider = ({ children }) => {
   const [gameData, setGameData] = useState({
     players: [],
     pendingBattles: [],
-    activeBattles: null,
+    activeBattle: null,
   });
   const [updateGameData, setUpdateGameData] = useState(0);
   const [BattleGround, setBattleGround] = useState("bg-astral");
@@ -83,7 +83,7 @@ export const GlobalProvider = ({ children }) => {
     const pendingBattles = fetchBattles.filter(
       (battle) => battle.battleStatus === 0
     );
-    let activeBattles = null;
+    let activeBattle = null;
 
     fetchBattles.forEach((battle) => {
       if (
@@ -92,11 +92,11 @@ export const GlobalProvider = ({ children }) => {
         )
       ) {
         if (battle.winner.startsWith("0x00")) {
-          activeBattles = battle;
+          activeBattle = battle;
         }
       }
     });
-    setGameData({ pendingBattles: pendingBattles.slice(1), activeBattles });
+    setGameData({ pendingBattles: pendingBattles.slice(1), activeBattle });
   };
 
   useEffect(() => {

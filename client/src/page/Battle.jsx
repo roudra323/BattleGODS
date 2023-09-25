@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import styles from "../styles";
-// import { ActionButton, Alert, Card, GameInfo, PlayerInfo } from "../components";
+import { ActionButton, Alert, Card, GameInfo, PlayerInfo } from "../components";
 import { useGlobalContext } from "../context";
 import {
   attack,
@@ -17,7 +17,7 @@ import { playAudio } from "../utils/animation.js";
 
 const Battle = () => {
   const navigate = useNavigate();
-  const { contract, gamedata, account, showAlert, setShowAlert, BattleGround } =
+  const { contract, gameData, account, showAlert, setShowAlert, BattleGround } =
     useGlobalContext();
   const [player2, setPlayer2] = useState({});
   const [player1, setPlayer1] = useState({});
@@ -29,13 +29,13 @@ const Battle = () => {
       let player02Address = null;
 
       if (
-        gamedata.activeBattle.players[0].toLowerCase() === account.toLowerCase()
+        gameData.activeBattle.players[0].toLowerCase() === account.toLowerCase()
       ) {
-        player01Address = gamedata.activeBattle.players[0];
-        player02Address = gamedata.activeBattle.players[1];
+        player01Address = gameData.activeBattle.players[0];
+        player02Address = gameData.activeBattle.players[1];
       } else {
-        player01Address = gamedata.activeBattle.players[1];
-        player02Address = gamedata.activeBattle.players[0];
+        player01Address = gameData.activeBattle.players[1];
+        player02Address = gameData.activeBattle.players[0];
       }
 
       const p1TokenData = await contract.getPlayerToken(player01Address);
@@ -62,9 +62,9 @@ const Battle = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (contract && gamedata.activeBattle) getPlayerInfo();
-  // }, [contract, gamedata, battleName]);
+  useEffect(() => {
+    if (contract && gameData.activeBattle) getPlayerInfo();
+  }, [contract, gameData, battleName]);
 
   return (
     <div
@@ -74,6 +74,29 @@ const Battle = () => {
         <Alert type={showAlert.type} message={showAlert.message} />
       )}
       <PlayerInfo player={player2} playerIcon={player02Icon} mt />
+      <div className={`${styles.flexCenter} flex-col my-10`}>
+        <Card card={player2} title={player2?.playerName} cardRef="" playerTwo />
+        <div className="flex items-center flex-row">
+          <ActionButton
+            imgUrl={attack}
+            handleClick={() => {}}
+            restStyles="mr-2 hover:border-yellow-400 "
+          />
+          <Card
+            card={player1}
+            title={player1?.playerName}
+            cardRef=""
+            restStyles="mt-3"
+          />
+          <ActionButton
+            imgUrl={attack}
+            handleClick={() => {}}
+            restStyles="ml-6 hover:border-red-600 "
+          />
+        </div>
+      </div>
+      <PlayerInfo player={player1} playerIcon={player01Icon} mt />
+      <GameInfo />
     </div>
   );
 };
