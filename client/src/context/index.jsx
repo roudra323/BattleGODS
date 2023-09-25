@@ -36,6 +36,7 @@ export const GlobalProvider = ({ children }) => {
     activeBattles: null,
   });
   const [updateGameData, setUpdateGameData] = useState(0);
+  const [BattleGround, setBattleGround] = useState("bg-astral");
   const contractInstance = async () => {
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
     const contractABI = ABI;
@@ -148,6 +149,8 @@ export const GlobalProvider = ({ children }) => {
         battleName,
         setBattleName,
         gameData,
+        BattleGround,
+        setBattleGround,
       }}
     >
       {children}
