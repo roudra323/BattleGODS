@@ -57,6 +57,16 @@ const PlayerInfo = ({ player, playerIcon, mt }) => {
           {player.playerAddress}
         </p>
       </ReactTooltip>
+      <ReactTooltip
+        id={`Health-${mt ? "1" : "2"}`}
+        effect="solid"
+        backgroundColor="#7f46f0"
+      />
+      <ReactTooltip
+        id={`Mana-${mt ? "1" : "2"}`}
+        effect="solid"
+        backgroundColor="#7f46f0"
+      />
     </div>
   );
 };
