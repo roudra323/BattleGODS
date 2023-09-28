@@ -45,4 +45,14 @@ export const createEventListeners = ({
     }
     setUpdateGameData((prevGameData) => prevGameData + 1);
   });
+
+  const BattleMoveEventFilter = contract.filters.BattleMove();
+  AddNewEvent(BattleMoveEventFilter, provider, ({ args }) => {
+    console.log("Battle move initiated!!", args);
+  });
+
+  const RoundEndedEventFilter = contract.filters.RoundEnded();
+  AddNewEvent(RoundEndedEventFilter, provider, ({ args }) => {
+    console.log("Round Ended!!", args, account);
+  });
 };

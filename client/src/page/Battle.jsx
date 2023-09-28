@@ -17,8 +17,15 @@ import { playAudio } from "../utils/animation.js";
 
 const Battle = () => {
   const navigate = useNavigate();
-  const { contract, gameData, account, showAlert, setShowAlert, BattleGround } =
-    useGlobalContext();
+  const {
+    contract,
+    gameData,
+    account,
+    showAlert,
+    setShowAlert,
+    BattleGround,
+    seterrorMessage,
+  } = useGlobalContext();
   const [player2, setPlayer2] = useState({});
   const [player1, setPlayer1] = useState({});
   const { battleName } = useParams();
@@ -42,6 +49,8 @@ const Battle = () => {
       const player01 = await contract.getPlayer(player01Address);
       const player02 = await contract.getPlayer(player02Address);
 
+      console.log(player01, "\n", player02);
+
       const p1Att = p1TokenData.attackStrength.toNumber();
       const p1Def = p1TokenData.defenseStrength.toNumber();
       const p1H = player01.playerHealth.toNumber();
@@ -58,13 +67,29 @@ const Battle = () => {
       });
       setPlayer2({ ...player02, att: "X", def: "X", health: p2H, mana: p2M });
     } catch (error) {
-      console.log(error);
+      seterrorMessage(error);
     }
   };
 
   useEffect(() => {
     if (contract && gameData.activeBattle) getPlayerInfo();
   }, [contract, gameData, battleName]);
+
+  const makeMove = async (choice) => {
+    playAudio(choice === 1 ? attackSound : defenseSound);
+
+    try {
+      await contract.attackOrDefendChoice(choice, battleName);
+
+      setShowAlert({
+        status: true,
+        type: "info",
+        message: `Initiating ${choice === 1 ? "Attack" : "Defense"}`,
+      });
+    } catch (error) {
+      seterrorMessage(error);
+    }
+  };
 
   return (
     <div
@@ -79,9 +104,12 @@ const Battle = () => {
         <div className="flex items-center flex-row">
           <ActionButton
             imgUrl={attack}
-            handleClick={() => {}}
+            handleClick={() => {
+              makeMove(1);
+            }}
             restStyles="mr-2 hover:border-yellow-400 "
           />
+          {console.log("Contract", contract)}
           <Card
             card={player1}
             title={player1?.playerName}
@@ -90,7 +118,9 @@ const Battle = () => {
           />
           <ActionButton
             imgUrl={attack}
-            handleClick={() => {}}
+            handleClick={() => {
+              makeMove(2);
+            }}
             restStyles="ml-6 hover:border-red-600 "
           />
         </div>

@@ -12,6 +12,7 @@ import Web3Modal from "web3modal";
 import { useNavigate } from "react-router-dom";
 import ABI from "../contract";
 import { createEventListeners } from "./createEventListeners";
+import { GetParams } from "../utils/onboard";
 
 const GlobalContext = createContext();
 
@@ -22,6 +23,9 @@ export const GlobalProvider = ({ children }) => {
     signer: null,
     contract: null,
   });
+
+  console.log("This is state: ", state);
+
   const [account, setAccount] = useState("None");
   const [isConnected, setIsConnected] = useState(false);
   const [showAlert, setShowAlert] = useState({
@@ -37,6 +41,9 @@ export const GlobalProvider = ({ children }) => {
   });
   const [updateGameData, setUpdateGameData] = useState(0);
   const [BattleGround, setBattleGround] = useState("bg-astral");
+  const [step, setStep] = useState(1);
+  const [errorMessage, seterrorMessage] = useState("");
+
   const contractInstance = async () => {
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
     const contractABI = ABI;
@@ -99,6 +106,45 @@ export const GlobalProvider = ({ children }) => {
     setGameData({ pendingBattles: pendingBattles.slice(1), activeBattle });
   };
 
+  //* Handle Error messages
+  useEffect(() => {
+    if (errorMessage) {
+      const parsedErrorMessage = errorMessage?.reason
+        ?.slice("execution reverted: ".length)
+        .slice(0, -1);
+      if (parsedErrorMessage) {
+        setShowAlert({
+          status: true,
+          type: "failure",
+          message: parsedErrorMessage,
+        });
+      }
+    }
+  }, [errorMessage]);
+
+  useEffect(() => {
+    const resetParams = async () => {
+      const currentStep = await GetParams();
+
+      setStep(currentStep.step);
+    };
+    resetParams();
+
+    window?.ethereum?.on("chainChanged", () => resetParams());
+    window?.ethereum?.on("accountsChanged", () => resetParams());
+  }, []);
+
+  //* Set battleground to local storage
+  useEffect(() => {
+    const isBattleground = localStorage.getItem("battleGround");
+
+    if (isBattleground) {
+      setBattleGround(isBattleground);
+    } else {
+      localStorage.setItem("battleGround", BattleGround);
+    }
+  }, []);
+
   useEffect(() => {
     contractInstance();
     window?.ethereum?.on("accountsChanged", contractInstance);
@@ -118,7 +164,7 @@ export const GlobalProvider = ({ children }) => {
   }, [showAlert]);
 
   useEffect(() => {
-    if (state.contract) {
+    if (step !== -1 && state.contract) {
       const contract = state.contract;
       const provider = state.provider;
       createEventListeners({
@@ -151,8 +197,17 @@ export const GlobalProvider = ({ children }) => {
         gameData,
         BattleGround,
         setBattleGround,
+        errorMessage,
+        seterrorMessage,
       }}
     >
+      {console.log("This is gamedata: ", gameData)}
+      {console.log("This is game name: ", gameData.activeBattle)}
+      {console.log(
+        "This is game status: ",
+        gameData.activeBattle?.battleStatus
+      )}
+
       {children}
     </GlobalContext.Provider>
   );

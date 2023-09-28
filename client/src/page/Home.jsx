@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "../context";
 import { PageHOC, CustomInput, CustomButton } from "../components";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const { contract, account, isConnected, setShowAlert } = useGlobalContext();
+  const { contract, account, isConnected, setShowAlert, gameData } =
+    useGlobalContext();
   console.log(contract, account, isConnected);
   const [playerName, setPlayerName] = useState("");
+  const navigate = useNavigate();
 
   const handleClick = async () => {
     try {
@@ -47,6 +50,15 @@ const Home = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (gameData?.activeBattle?.battleStatus === 1) {
+      console.log("This is game data", gameData);
+      navigate(`/battle/${gameData.activeBattle.name}`);
+    } else if (gameData?.activeBattle?.battleStatus === 0) {
+      setWaitBattle(true);
+    }
+  }, [gameData, account]);
 
   return (
     <div className="flex flex-col">

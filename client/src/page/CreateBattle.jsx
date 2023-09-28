@@ -5,7 +5,8 @@ import styles from "../styles";
 import { useGlobalContext } from "../context";
 
 const CreateBattle = () => {
-  const { contract, battleName, setBattleName, gameData } = useGlobalContext();
+  const { contract, battleName, setBattleName, gameData, seterrorMessage } =
+    useGlobalContext();
   const navigate = useNavigate();
   const [waitBattle, setWaitBattle] = useState(false);
 
@@ -15,15 +16,18 @@ const CreateBattle = () => {
       await contract.createBattle(battleName);
       setWaitBattle(true);
     } catch (error) {
-      console.log(error);
+      seterrorMessage(error);
     }
   };
 
-  useEffect(() => {
-    if (gameData?.activeBattles?.battleStatus === 0) {
-      setWaitBattle(true);
-    }
-  }, [gameData]);
+  // useEffect(() => {
+  //   if (gameData?.activeBattle?.battleStatus === 1) {
+  //     console.log("This is game data", gameData);
+  //     navigate(`/battle/${gameData.activeBattle.name}`);
+  //   } else if (gameData?.activeBattle?.battleStatus === 0) {
+  //     setWaitBattle(true);
+  //   }
+  // }, [gameData]);
 
   return (
     <>
