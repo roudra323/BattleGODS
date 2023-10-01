@@ -49,7 +49,7 @@ export const createEventListeners = ({
   const NewGameTokenEventFilter = contract.filters.NewGameToken();
 
   AddNewEvent(NewGameTokenEventFilter, provider, ({ args }) => {
-    console.log("New game token created!!", args);
+    // console.log("New game token created!!", args);
 
     if (account.toLowerCase() === args.owner.toLowerCase()) {
       setShowAlert({
@@ -64,7 +64,7 @@ export const createEventListeners = ({
   const NewBattleEventFilter = contract.filters.NewBattle();
 
   AddNewEvent(NewBattleEventFilter, provider, ({ args }) => {
-    console.log("New Battle Created!!", args, account);
+    // console.log("New Battle Created!!", args, account);
 
     if (
       account.toLowerCase() === args.player1.toLowerCase() ||
@@ -77,12 +77,12 @@ export const createEventListeners = ({
 
   const BattleMoveEventFilter = contract.filters.BattleMove();
   AddNewEvent(BattleMoveEventFilter, provider, ({ args }) => {
-    console.log("Battle move initiated!!", args);
+    // console.log("Battle move initiated!!", args);
   });
 
   const RoundEndedEventFilter = contract.filters.RoundEnded();
   AddNewEvent(RoundEndedEventFilter, provider, ({ args }) => {
-    console.log("Round Ended!!", args, account);
+    // console.log("Round Ended!!", args, account);
 
     for (let i = 0; args.damagedPlayers.length > i; i++) {
       if (
@@ -102,7 +102,7 @@ export const createEventListeners = ({
 
   const BattleEndedEventFilter = contract.filters.BattleEnded();
   AddNewEvent(BattleEndedEventFilter, provider, ({ args }) => {
-    console.log("Battle Ended!!", args, account);
+    // console.log("Battle Ended!!", args, account);
 
     if (account.toLowerCase() === args.winner.toLowerCase()) {
       setShowAlert({

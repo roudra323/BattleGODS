@@ -10,7 +10,7 @@ const JoinBattle = () => {
     useGlobalContext();
   const navigate = useNavigate();
 
-  console.log("This gameData is from createBattle UP", gameData);
+  // console.log("This gameData is from createBattle UP", gameData);
 
   useEffect(() => {
     if (gameData?.activeBattle?.battleStatus === 1) {
@@ -31,7 +31,7 @@ const JoinBattle = () => {
     } catch (error) {}
   };
 
-  console.log("This gameData is from createBattle DOWN", gameData);
+  // console.log("This gameData is from createBattle DOWN", gameData);
   return (
     <>
       <h2 className={styles.joinHeadText}>Available Battles:</h2>

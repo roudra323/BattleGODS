@@ -21,7 +21,7 @@ const CreateBattle = () => {
   };
 
   useEffect(() => {
-    console.log("This is from createBattle", gameData);
+    // console.log("This is from createBattle", gameData);
     if (gameData?.activeBattle?.battleStatus === 1) {
       navigate(`/battle/${gameData.activeBattle.name}`);
     } else if (gameData?.activeBattle?.battleStatus === 0) {

@@ -24,7 +24,7 @@ export const GlobalProvider = ({ children }) => {
     contract: null,
   });
 
-  console.log("This is state: ", state);
+  // console.log("This is state: ", state);
 
   const [account, setAccount] = useState("");
   const [isConnected, setIsConnected] = useState(false);
@@ -82,13 +82,13 @@ export const GlobalProvider = ({ children }) => {
         alert("Please install metamask");
       }
     } catch (error) {
-      console.log(error);
+      seterrorMessage(error);
     }
   };
 
   const fetchGameData = async () => {
     const fetchBattles = await state.contract.getAllBattles();
-    console.log(fetchBattles);
+    // console.log(fetchBattles);
 
     const pendingBattles = fetchBattles.filter(
       (battle) => battle.battleStatus === 0

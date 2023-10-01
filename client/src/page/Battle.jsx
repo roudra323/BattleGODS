@@ -76,7 +76,7 @@ const Battle = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!gameData.activeBattle) navigate("/");
-      console.log("Inside useeffect");
+      // console.log("Inside useeffect");
     }, 1000);
 
     return () => clearTimeout(timer);
@@ -85,7 +85,7 @@ const Battle = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (contract && !gameData.activeBattle) navigate("/");
-      console.log("Inside useeffect V2");
+      // console.log("Inside useeffect V2");
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -134,7 +134,7 @@ const Battle = () => {
             }}
             restStyles="mr-2 hover:border-yellow-400 "
           />
-          {console.log("Contract", contract)}
+          {/* {console.log("Contract", contract)} */}
           <Card
             card={player1}
             title={player1?.playerName}
