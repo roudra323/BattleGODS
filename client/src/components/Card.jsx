@@ -1,6 +1,5 @@
 import React from "react";
 import Tilt from "react-parallax-tilt";
-import Styles from "../styles";
 import { allCards } from "../assets";
 import styles from "../styles";
 
@@ -13,7 +12,7 @@ const img2 = generateRandomCardImage();
 const Card = ({ card, title, restStyles, cardRef, playerTwo }) => {
   return (
     <Tilt>
-      <div className={`${styles.cardContainer} ${restStyles}`}>
+      <div ref={cardRef} className={`${styles.cardContainer} ${restStyles}`}>
         <img
           src={playerTwo ? img2 : img1}
           alt="card"

@@ -4,9 +4,15 @@ import { PageHOC, CustomInput, CustomButton } from "../components";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const { contract, account, isConnected, setShowAlert, gameData } =
-    useGlobalContext();
-  console.log(contract, account, isConnected);
+  const {
+    contract,
+    account,
+    isConnected,
+    setShowAlert,
+    gameData,
+    seterrorMessage,
+  } = useGlobalContext();
+  // console.log(contract, account, isConnected);
   const [playerName, setPlayerName] = useState("");
   const navigate = useNavigate();
 
@@ -21,10 +27,10 @@ const Home = () => {
         return;
       }
       const isPlayerExist = await contract.isPlayer(account);
-      console.log(isPlayerExist);
+      // console.log(isPlayerExist);
 
       const allPlayers = await contract.getAllPlayers();
-      console.log(allPlayers);
+      // console.log(allPlayers);
 
       if (!isPlayerExist) {
         await contract.registerPlayer(playerName, playerName);
@@ -41,24 +47,26 @@ const Home = () => {
         });
       }
     } catch (err) {
-      console.log("This is from home.jsx -> \n", err.code);
-
-      setShowAlert({
-        status: true,
-        type: "failure",
-        message: err.code,
-      });
+      seterrorMessage(err);
     }
   };
 
   useEffect(() => {
-    if (gameData?.activeBattle?.battleStatus === 1) {
-      console.log("This is game data", gameData);
+    const createPlayerToken = async () => {
+      const playerExists = await contract.isPlayer(account);
+      const playerTokenExists = await contract.isPlayerToken(account);
+
+      if (playerExists && playerTokenExists) navigate("/create-battle");
+    };
+
+    if (contract) createPlayerToken();
+  }, [contract]);
+
+  useEffect(() => {
+    if (gameData.activeBattle) {
       navigate(`/battle/${gameData.activeBattle.name}`);
-    } else if (gameData?.activeBattle?.battleStatus === 0) {
-      setWaitBattle(true);
     }
-  }, [gameData, account]);
+  }, [gameData]);
 
   return (
     <div className="flex flex-col">

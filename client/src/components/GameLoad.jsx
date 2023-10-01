@@ -39,6 +39,14 @@ const GameLoad = () => {
             <p className={styles.gameLoadPlayerText}>???????????????</p>
           </div>
         </div>
+        <div className="mt-10">
+          <p className={`${styles.infoText} text-center mb-5`}>OR</p>
+
+          <CustomButton
+            title="Join other battles"
+            handleClick={() => navigate("/join-battle")}
+          />
+        </div>
       </div>
     </div>
   );

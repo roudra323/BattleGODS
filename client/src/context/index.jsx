@@ -26,7 +26,7 @@ export const GlobalProvider = ({ children }) => {
 
   console.log("This is state: ", state);
 
-  const [account, setAccount] = useState("None");
+  const [account, setAccount] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [showAlert, setShowAlert] = useState({
     status: false,
@@ -43,6 +43,9 @@ export const GlobalProvider = ({ children }) => {
   const [BattleGround, setBattleGround] = useState("bg-astral");
   const [step, setStep] = useState(1);
   const [errorMessage, seterrorMessage] = useState("");
+  // const [account, setWalletAddress] = useState("");
+  const player1Ref = useRef();
+  const player2Ref = useRef();
 
   const contractInstance = async () => {
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
@@ -106,6 +109,21 @@ export const GlobalProvider = ({ children }) => {
     setGameData({ pendingBattles: pendingBattles.slice(1), activeBattle });
   };
 
+  //* Set the wallet address to the state
+  const updateCurrentWalletAddress = async () => {
+    const accounts = await window?.ethereum?.request({
+      method: "eth_requestAccounts",
+    });
+
+    if (accounts) setAccount(accounts[0]);
+  };
+
+  useEffect(() => {
+    updateCurrentWalletAddress();
+
+    window?.ethereum?.on("accountsChanged", updateCurrentWalletAddress);
+  }, []);
+
   //* Handle Error messages
   useEffect(() => {
     if (errorMessage) {
@@ -122,6 +140,7 @@ export const GlobalProvider = ({ children }) => {
     }
   }, [errorMessage]);
 
+  //setting params
   useEffect(() => {
     const resetParams = async () => {
       const currentStep = await GetParams();
@@ -145,11 +164,13 @@ export const GlobalProvider = ({ children }) => {
     }
   }, []);
 
+  //contract instance
   useEffect(() => {
     contractInstance();
     window?.ethereum?.on("accountsChanged", contractInstance);
   }, []);
 
+  //handle alert
   useEffect(() => {
     if (showAlert?.status) {
       const timer = setTimeout(() => {
@@ -163,8 +184,9 @@ export const GlobalProvider = ({ children }) => {
     }
   }, [showAlert]);
 
+  //useState for event listeners
   useEffect(() => {
-    if (step !== -1 && state.contract) {
+    if (step === -1 && state.contract) {
       const contract = state.contract;
       const provider = state.provider;
       createEventListeners({
@@ -174,15 +196,20 @@ export const GlobalProvider = ({ children }) => {
         account,
         setShowAlert,
         setUpdateGameData,
+        player1Ref,
+        player2Ref,
+        updateCurrentWalletAddress,
+        gameData,
       });
     }
-  }, [state.contract, setUpdateGameData]);
+  }, [step]);
 
+  // useState for fetching game data
   useEffect(() => {
     if (state.contract) {
       fetchGameData();
     }
-  }, [state.contract]);
+  }, [state.contract, updateGameData]);
 
   return (
     <GlobalContext.Provider
@@ -199,15 +226,10 @@ export const GlobalProvider = ({ children }) => {
         setBattleGround,
         errorMessage,
         seterrorMessage,
+        player1Ref,
+        player2Ref,
       }}
     >
-      {console.log("This is gamedata: ", gameData)}
-      {console.log("This is game name: ", gameData.activeBattle)}
-      {console.log(
-        "This is game status: ",
-        gameData.activeBattle?.battleStatus
-      )}
-
       {children}
     </GlobalContext.Provider>
   );

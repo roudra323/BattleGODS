@@ -10,6 +10,14 @@ const JoinBattle = () => {
     useGlobalContext();
   const navigate = useNavigate();
 
+  console.log("This gameData is from createBattle UP", gameData);
+
+  useEffect(() => {
+    if (gameData?.activeBattle?.battleStatus === 1) {
+      navigate(`/battle/${gameData.activeBattle.name}`);
+    }
+  }, [gameData]);
+
   const handleClick = async (battleName) => {
     setBattleName(battleName);
 
@@ -22,13 +30,18 @@ const JoinBattle = () => {
       });
     } catch (error) {}
   };
+
+  console.log("This gameData is from createBattle DOWN", gameData);
   return (
     <>
       <h2 className={styles.joinHeadText}>Available Battles:</h2>
       <div className={styles.joinContainer}>
         {gameData.pendingBattles.length ? (
           gameData.pendingBattles
-            .filter((battle) => !battle.players.includes(account))
+            .filter(
+              (battle) =>
+                !battle.players.includes(account) && battle.battleStatus !== 1
+            )
             .map((battle, index) => (
               <div key={battle.name + index} className={styles.flexBetween}>
                 <p className={styles.joinBattleTitle}>

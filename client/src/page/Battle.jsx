@@ -25,6 +25,8 @@ const Battle = () => {
     setShowAlert,
     BattleGround,
     seterrorMessage,
+    player1Ref,
+    player2Ref,
   } = useGlobalContext();
   const [player2, setPlayer2] = useState({});
   const [player1, setPlayer1] = useState({});
@@ -49,7 +51,7 @@ const Battle = () => {
       const player01 = await contract.getPlayer(player01Address);
       const player02 = await contract.getPlayer(player02Address);
 
-      console.log(player01, "\n", player02);
+      // console.log(player01, "\n", player02);
 
       const p1Att = p1TokenData.attackStrength.toNumber();
       const p1Def = p1TokenData.defenseStrength.toNumber();
@@ -70,6 +72,24 @@ const Battle = () => {
       seterrorMessage(error);
     }
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!gameData.activeBattle) navigate("/");
+      console.log("Inside useeffect");
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (contract && !gameData.activeBattle) navigate("/");
+      console.log("Inside useeffect V2");
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [gameData]);
 
   useEffect(() => {
     if (contract && gameData.activeBattle) getPlayerInfo();
@@ -100,7 +120,12 @@ const Battle = () => {
       )}
       <PlayerInfo player={player2} playerIcon={player02Icon} mt />
       <div className={`${styles.flexCenter} flex-col my-10`}>
-        <Card card={player2} title={player2?.playerName} cardRef="" playerTwo />
+        <Card
+          card={player2}
+          title={player2?.playerName}
+          cardRef={player2Ref}
+          playerTwo
+        />
         <div className="flex items-center flex-row">
           <ActionButton
             imgUrl={attack}
@@ -113,11 +138,11 @@ const Battle = () => {
           <Card
             card={player1}
             title={player1?.playerName}
-            cardRef=""
+            cardRef={player1Ref}
             restStyles="mt-3"
           />
           <ActionButton
-            imgUrl={attack}
+            imgUrl={defense}
             handleClick={() => {
               makeMove(2);
             }}
@@ -125,7 +150,7 @@ const Battle = () => {
           />
         </div>
       </div>
-      <PlayerInfo player={player1} playerIcon={player01Icon} mt />
+      <PlayerInfo player={player1} playerIcon={player01Icon} />
       <GameInfo />
     </div>
   );
